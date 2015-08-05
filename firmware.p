@@ -5,7 +5,7 @@
 //*************************/
 
 //* PRU Register and constants */
-#define PRU0_ARM_INTERRUPT              19
+//#define PRU0_ARM_INTERRUPT              19
 #define GPIO_DATAIN                     0x138                                   // This is the register for reading data 
 #define GPIO0                           0x44E07000                              // The address of the GPIO0 bank
 #define GPIO1                           0x4804C000                              // The address of the GPIO1 bank
@@ -70,6 +70,21 @@
 #define ADC_TEMP        r25
 #define ADC_MEM         r26
 
+// Refer to this mapping in the file - pruss_intc_mapping.h
+#define PRU0_PRU1_INTERRUPT     17
+#define PRU1_PRU0_INTERRUPT     18
+#define PRU0_ARM_INTERRUPT      19
+#define PRU1_ARM_INTERRUPT      20
+#define ARM_PRU0_INTERRUPT      21
+#define ARM_PRU1_INTERRUPT      22
+
+#define CONST_PRUDRAM   C24
+#define CONST_L3RAM     C30
+#define CONST_DDR       C31
+
+#define CTBIR_0         0x22020    // Address for the Constant table Programmable Pointer Register 0(CTPPR_0)
+#define CTBIR_1         0x22024
+
 //Memory map in shared RAM:
 //0x0120:       start address    
 
@@ -78,8 +93,15 @@ INIT:
     CLR  r0, r0, 4                 // Clear bit 4 in reg 0 (copy of SYSCFG). This enables OCP master ports needed to access all OMAP peripherals
     SBCO r0, C4, 4, 4              // Load back the modified SYSCFG register    
     
-    MOV  r0, SHARED_RAM_ENDSTOPS_ADDR           // Set the C28 address for shared ram, C29 is set to 0
-    MOV  r1, CTPPR0_REGISTER
+//    MOV  r0, SHARED_RAM_ENDSTOPS_ADDR           // Set the C28 address for shared ram, C29 is set to 0
+//    MOV  r1, CTPPR0_REGISTER
+//    SBBO r0, r1, 0, 4
+
+    // Configure the block index register for PRU0 by setting c24_blk_index[7:0] and
+    // c25_blk_index[7:0] field to 0x00 and 0x00, respectively.  This will make C24 point
+    // to 0x00000000 (PRU0 DRAM) and C25 point to 0x00002000 (PRU1 DRAM).
+    MOV  r0, 0x00000000
+    MOV  r1, CTBIR_0
     SBBO r0, r1, 0, 4
 
     // Setup ADC
@@ -166,18 +188,44 @@ READ_ADC_VALS:
 //    LSL  ADC_CHAN, ADC_CHAN, 12                // shift left: ADC_CHAN = (ADC_CHAN << 12) to put channel in top 4-bit position
 //    OR   ADC_VALU.b1, ADC_CHAN.b1, ADC_VALU.b1 // combine 12-bits lower and 4-bits upper
 //    OR   ADC_VALU, ADC_CHAN, ADC_VALU          // combine ADCCHANID and ADCDATA into lower 2 bytes 0x<chan><data><data><data>
-    MOV  ADC_VALU, 0xcafebabe
+
+    //MOV  ADC_VALU, 0xcafebabe
+    MOV  r1, 0xcafebabe
+    MOV  ADC_TEMP, 0x0000
+    SBBO r1, ADC_TEMP, 0, 4
+
     SUB  ADC_CNT, ADC_CNT, 1                   // count ADC channels minus 1
 
     // instead of one line of code, pasm compiler makes me use 100
 //    QBEQ AIN_7, ADC_CNT, 7
-    QBEQ AIN_6, ADC_CNT, 6
-    QBEQ AIN_5, ADC_CNT, 5
-    QBEQ AIN_4, ADC_CNT, 4
-    QBEQ AIN_3, ADC_CNT, 3
-    QBEQ AIN_2, ADC_CNT, 2
-    QBEQ AIN_1, ADC_CNT, 1
-    QBEQ AIN_0, ADC_CNT, 0
+//    QBEQ AIN_6, ADC_CNT, 6
+//    QBEQ AIN_5, ADC_CNT, 5
+//    QBEQ AIN_4, ADC_CNT, 4
+//    QBEQ AIN_3, ADC_CNT, 3
+//    QBEQ AIN_2, ADC_CNT, 2
+//    QBEQ AIN_1, ADC_CNT, 1
+//    QBEQ AIN_0, ADC_CNT, 0
+
+//    SBCO ADC_VALU, C28, 0, 4
+//    SBCO ADC_VALU, C28, 4, 4
+//    SBCO ADC_VALU, C28, 8, 4
+//    SBCO ADC_VALU, C28, 12, 4
+//    SBCO ADC_VALU, C28, 16, 4
+//    SBCO ADC_VALU, C28, 20, 4
+//    SBCO ADC_VALU, C28, 24, 4
+  
+    MOV  ADC_VALU, 0xbabecafe
+    SBCO ADC_VALU, CONST_PRUDRAM, 4, 4  
+    MOV  ADC_VALU, 0xdeadbeef
+    SBCO ADC_VALU, CONST_PRUDRAM, 8, 4  
+    MOV  ADC_VALU, 0xfeedabba
+    SBCO ADC_VALU, CONST_PRUDRAM, 12, 4  
+    MOV  ADC_VALU, 0xdeafbead
+    SBCO ADC_VALU, CONST_PRUDRAM, 16, 4  
+    MOV  ADC_VALU, 0xdeedfade
+    SBCO ADC_VALU, CONST_PRUDRAM, 20, 4  
+    MOV  ADC_VALU, 0xabbadead
+    SBCO ADC_VALU, CONST_PRUDRAM, 24, 4  
     JMP TEST // being cautious, if there is a mistake, just skip (so I don't break stuff)
 
 // copy 2 bytes from ADC_VALU to (GPIO_WORD_LEN + n) in C28
@@ -222,8 +270,8 @@ AIN_0:
 
 
 TEST:
-    MOV r8, 0
-
+    // Send notification to Host for program completion
+    MOV R31.b0, PRU1_ARM_INTERRUPT+16
 
     QBA COLLECT
 

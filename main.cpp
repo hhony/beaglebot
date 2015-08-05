@@ -50,7 +50,7 @@ int main(int argc, const char * argv[])
 		gSensorLog->LogMsgArgs(ERROR, "Failed to open /dev/mem %d: %s", errno, strerror(errno));
 	}
 
-	printf("adc mmap location...\n");
+	printf("adc mmap location %x...\n", RAM2_BEGIN);
 
 	// adc memory map
 	ddr_adc_mem = (uint8_t*)mmap(0, ADC_STORE_LEN, PROT_READ, MAP_SHARED, mem_fd, RAM2_BEGIN);

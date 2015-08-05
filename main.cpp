@@ -83,13 +83,11 @@ int main(int argc, const char * argv[])
 	/* Get the interrupt initialized */
 	prussdrv_pruintc_init(&pruss_intc_initdata);
 
-	//ret = prussdrv_exec_program (PRU_NUM0, "/root/pru_test/firmware_runtime.bin");
-	//printf("returned from pru 0 start...\n");
+	void* pru_data_mem;
+	prussdrv_map_prumem (PRUSS0_PRU1_DATARAM, &pru_data_mem);
 
-	//if (ret != 0) {
-	//	gSensorLog->LogMsgArgs(WARNING, "Could not execute stepper firmware on PRU0 [%u]", ret);
-	//}
-
+	unsigned int * pru_data_int = (unsigned int *) pru_data_mem;
+	
 	ret = prussdrv_exec_program (PRU_NUM1, "/root/pru_test/firmware.bin");
 	printf("returned from pru 1 start...\n");
 
@@ -107,22 +105,27 @@ int main(int argc, const char * argv[])
 			return -1;
 		}
 
+        printf("Waiting for PRU interrupt command.\n");
+        prussdrv_pru_wait_event (PRU_EVTOUT_1, 5000);
+        printf("PRU completed transfer.\n");
+        prussdrv_pru_clear_event (PRU_EVTOUT_1, PRU1_ARM_INTERRUPT);
+
 		printf("defining variables...\n");
 
 		uint32_t temp, upper, lower;
-		uint8_t* read_loc = ddr_adc_mem + (8 * GPIO_WORD_LEN);
+		
 
 		for (int i = 0; i < ADC_REGISTERS; i++) {
 			//printf("reading AIN%d and AIN%d\n", 2*i+1, 2*i);
-			printf("reading AIN%d\n", i);
-			memcpy(&temp, read_loc, sizeof(uint32_t));
-			msync(&temp, sizeof(uint32_t), MS_SYNC);
+			printf("reading AIN%d ", i);
+			temp = pru_data_int[i];
 
 			//upper = (temp & 0x0FFF0000) >> 16;
 			lower = temp;//(temp & 0x00000FFF);
 			
 			//printf("upper %u lower %u\n", upper, lower);
-			printf("lower %08x\n", lower);
+			printf(" value '%08x'\n", lower);
+
 			switch (i) {
 			//case 0:
 			//	ADC_Values.AIN1 = upper;
@@ -164,8 +167,6 @@ int main(int argc, const char * argv[])
 				break;
 			}
 
-			printf("advancing pointer... read_loc %08x\n", read_loc);
-			read_loc += (4 * sizeof(uint8_t));
 		}
 
 		gSensorLog->LogMsgArgs(DATA, "%x, %x, %x, %x, %x, %x, %x"//"%u, %u, %u, %u, %u, %u, %u"

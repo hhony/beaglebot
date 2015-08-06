@@ -144,7 +144,7 @@ WAIT_FOR_IDLE:
     MOV  ADC_TEMP, ADC_CHAN7_CFG
     SBBO ADC_TEMP, ADC_REG, ADC_STEPCONFIG7, 4  // load STEPCONFIG7
     
-    MOV  ADC_TEMP, 0x00000000
+    MOV  ADC_TEMP, 0x0003A980                   // 240k clock cycles, about 10ms on 24MHz clock
     SBBO ADC_TEMP, ADC_REG, ADC_STEPDELAY1, 4   // no delay
     SBBO ADC_TEMP, ADC_REG, ADC_STEPDELAY2, 4   // no delay
     SBBO ADC_TEMP, ADC_REG, ADC_STEPDELAY3, 4   // no delay

@@ -176,95 +176,30 @@ COLLECT:
     KICK_ADC
 
 READ_ADC_VALS:
-//    LBBO ADC_VALU, ADC_READ, 0, 4              // copy 4 bytes into ADC_VALU from ADC_READ+0
-//    LSR  ADC_CHAN, ADC_VALU, 16	             // shift right: ADC_CHAN = ADC_VALU >> (16 & 0x1f) to remove 0-15 bits
+
+    MOV  ADC_CNT, 0
+WAIT_FOR_ADC:
+    LBBO ADC_CNT, ADC_REG, ADC_FIFO0COUNT, 4   // load byte burst: copy 4 bytes into ADC_CNT from FIFO0COUNT
+    QBEQ WAIT_FOR_ADC, ADC_CNT, 0              // quick branch to WAIT_FOR_ADC, if no data yet
+
+    LBBO ADC_VALU, ADC_READ, 0, 4              // copy 4 bytes into ADC_VALU from ADC_READ+0
+//    LSR  ADC_CHAN, ADC_VALU, 16                // shift right: ADC_CHAN = ADC_VALU >> (16 & 0x1f) to remove 0-15 bits
 //    AND  ADC_CHAN, ADC_CHAN, 0x0f              // mask byte: ADC_CHAN = (ADC_CHAN & 0x000f) to isolate ADCCHNLID
-//    AND  ADC_VALU.b1, ADC_VALU.b1, 0x0f        // mask byte: remove RESERVED from bits 12-15
+    AND  ADC_VALU.b1, ADC_VALU.b1, 0x0F        // mask byte: remove RESERVED from bits 12-15
+    MOV  ADC_VALU.w2, 0x0000
 //    LSL  ADC_CHAN, ADC_CHAN, 12                // shift left: ADC_CHAN = (ADC_CHAN << 12) to put channel in top 4-bit position
 //    OR   ADC_VALU.b1, ADC_CHAN.b1, ADC_VALU.b1 // combine 12-bits lower and 4-bits upper
 //    OR   ADC_VALU, ADC_CHAN, ADC_VALU          // combine ADCCHANID and ADCDATA into lower 2 bytes 0x<chan><data><data><data>
+//    AND  ADC_VALU.w2, ADC_VALU.w2, 0x0000
+//    SUB  ADC_CNT, ADC_CNT, 1                   // count ADC channels minus 1
 
-    //MOV  ADC_VALU, 0xcafebabe
-    MOV  r1, 0xcafebabe
-    MOV  ADC_TEMP, 0x0000
-    SBBO r1, ADC_TEMP, 0, 4
-
-    SUB  ADC_CNT, ADC_CNT, 1                   // count ADC channels minus 1
-
-    // instead of one line of code, pasm compiler makes me use 100
-//    QBEQ AIN_7, ADC_CNT, 7
-//    QBEQ AIN_6, ADC_CNT, 6
-//    QBEQ AIN_5, ADC_CNT, 5
-//    QBEQ AIN_4, ADC_CNT, 4
-//    QBEQ AIN_3, ADC_CNT, 3
-//    QBEQ AIN_2, ADC_CNT, 2
-//    QBEQ AIN_1, ADC_CNT, 1
-//    QBEQ AIN_0, ADC_CNT, 0
-
-//    SBCO ADC_VALU, C28, 0, 4
-//    SBCO ADC_VALU, C28, 4, 4
-//    SBCO ADC_VALU, C28, 8, 4
-//    SBCO ADC_VALU, C28, 12, 4
-//    SBCO ADC_VALU, C28, 16, 4
-//    SBCO ADC_VALU, C28, 20, 4
-//    SBCO ADC_VALU, C28, 24, 4
+    SBCO ADC_VALU, CONST_PRUDRAM, ADC_MEM, 4
+    ADD  ADC_MEM, ADC_MEM, 4                     // advance memory pointer by 4
+    QBEQ NOTIFY, ADC_MEM, 28                     // AIN0 * 4 = 0; AIN6 * 4 = 24
+    JMP READ_ADC_VALS
   
-    MOV  ADC_VALU, 0xbabecafe
-    SBCO ADC_VALU, CONST_PRUDRAM, 4, 4  
-    MOV  ADC_VALU, 0xdeadbeef
-    SBCO ADC_VALU, CONST_PRUDRAM, 8, 4  
-    MOV  ADC_VALU, 0xfeedabba
-    SBCO ADC_VALU, CONST_PRUDRAM, 12, 4  
-    MOV  ADC_VALU, 0xdeafbead
-    SBCO ADC_VALU, CONST_PRUDRAM, 16, 4  
-    MOV  ADC_VALU, 0xdeedfade
-    SBCO ADC_VALU, CONST_PRUDRAM, 20, 4  
-    MOV  ADC_VALU, 0xabbadead
-    SBCO ADC_VALU, CONST_PRUDRAM, 24, 4  
-    JMP TEST // being cautious, if there is a mistake, just skip (so I don't break stuff)
 
-// copy 2 bytes from ADC_VALU to (GPIO_WORD_LEN + n) in C28
-//AIN_7:
-//    SBCO ADC_VALU, C28, GPIO_WORD_LEN + 14, 2
-//    JMP READ_ADC_VALS // loop to read all ADC channels
-
-AIN_6:
-    SBBO ADC_VALU, ADC_MEM, 24*8, 4
-    //SBCO ADC_VALU, C28, GPIO_WORD_LEN + (24*8), 4
-    JMP READ_ADC_VALS // loop to read all ADC channels
-
-AIN_5:
-    //SBBO ADC_VALU, ADC_MEM, 20*8, 4
-    SBCO ADC_VALU, C28, GPIO_WORD_LEN + (20*8), 4
-    JMP READ_ADC_VALS // loop to read all ADC channels
-
-AIN_4:
-    //SBBO ADC_VALU, ADC_MEM, 16*8, 4
-    SBCO ADC_VALU, C28, GPIO_WORD_LEN + (16*8), 4
-    JMP READ_ADC_VALS // loop to read all ADC channels
-
-AIN_3:
-    //SBBO ADC_VALU, ADC_MEM, 12*8, 4
-    SBCO ADC_VALU, C28, GPIO_WORD_LEN + (12*8), 4
-    JMP READ_ADC_VALS // loop to read all ADC channels
-
-AIN_2:
-    //SBBO ADC_VALU, ADC_MEM, 8*8, 4
-    SBCO ADC_VALU, C28, GPIO_WORD_LEN + (8*8), 4
-    JMP READ_ADC_VALS // loop to read all ADC channels
-
-AIN_1:
-    //SBBO ADC_VALU, ADC_MEM, 4*8, 4
-    SBCO ADC_VALU, C28, GPIO_WORD_LEN + (4*8), 4
-    JMP READ_ADC_VALS // loop to read all ADC channels
-
-AIN_0:
-    //SBBO ADC_VALU, ADC_MEM, 0, 4
-    SBCO ADC_VALU, C28, GPIO_WORD_LEN, 4
-    // done reading
-
-
-TEST:
+NOTIFY:
     // Send notification to Host for program completion
     MOV R31.b0, PRU1_ARM_INTERRUPT+16
 

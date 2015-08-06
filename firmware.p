@@ -29,7 +29,7 @@
 #define ADC_CTRL_ENABLE 0x00000003         // read-only StepConfig, enable TS_ADC_SS and store ADCCHANID (aka Step_ID_tag)
 #define ADC_CLK_DIV     0x4C               // offset for ADC_CLKDIV register (0 for fastest sample) ...divides clock signal
 #define ADC_STEP_ENABLE 0x54               // offset for ADC_STEPENABLE
-#define ADC_STEP_VAL    0x000001fe         // enables STEP8 (w2) STEP1-STEP7 (w0)
+#define ADC_STEP_VAL    0x000000FE         // enables STEP1-STEP7 (w0)
 #define ADC_CHG_CONFIG  0x5C               // offset for TS CHARGE config register
 #define ADC_CHG_DELAY   0x60               // offset for TS CHARGE delay register
 #define ADC_STEPCONFIG1 0x64               // offset for STEPCONFIG1
@@ -143,8 +143,6 @@ WAIT_FOR_IDLE:
     SBBO ADC_TEMP, ADC_REG, ADC_STEPCONFIG6, 4  // load STEPCONFIG6
     MOV  ADC_TEMP, ADC_CHAN7_CFG
     SBBO ADC_TEMP, ADC_REG, ADC_STEPCONFIG7, 4  // load STEPCONFIG7
-    MOV  ADC_TEMP, ADC_CHAN8_CFG
-    SBBO ADC_TEMP, ADC_REG, ADC_STEPCONFIG8, 4  // load STEPCONFIG8
     
     MOV  ADC_TEMP, 0x00000000
     SBBO ADC_TEMP, ADC_REG, ADC_STEPDELAY1, 4   // no delay
@@ -154,7 +152,6 @@ WAIT_FOR_IDLE:
     SBBO ADC_TEMP, ADC_REG, ADC_STEPDELAY5, 4   // no delay
     SBBO ADC_TEMP, ADC_REG, ADC_STEPDELAY6, 4   // no delay
     SBBO ADC_TEMP, ADC_REG, ADC_STEPDELAY7, 4   // no delay
-    SBBO ADC_TEMP, ADC_REG, ADC_STEPDELAY8, 4   // no delay
     
     MOV  ADC_TEMP, ADC_FIFOTHRESH
     SBBO ADC_TEMP, ADC_REG, ADC_FIFO0THRESH, 4  // set the number of samples before generating an interrupt

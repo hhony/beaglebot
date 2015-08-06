@@ -88,7 +88,7 @@ int main(int argc, const char * argv[])
 
 	unsigned int * pru_data_int = (unsigned int *) pru_data_mem;
 	
-	ret = prussdrv_exec_program (PRU_NUM1, "/root/pru_test/firmware.bin");
+	ret = prussdrv_exec_program (PRU_NUM1, "../firmware.bin");
 	printf("returned from pru 1 start...\n");
 
 	if (ret != 0) {

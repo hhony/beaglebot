@@ -118,13 +118,13 @@ int main(int argc, const char * argv[])
 		for (int i = 0; i < ADC_REGISTERS; i++) {
 			//printf("reading AIN%d and AIN%d\n", 2*i+1, 2*i);
 			printf("reading AIN%d ", i);
-			temp = pru_data_int[i];
+			//temp = pru_data_int[i];
 
 			//upper = (temp & 0x0FFF0000) >> 16;
-			lower = temp;//(temp & 0x00000FFF);
+			lower = pru_data_int[i];//(temp & 0x00000FFF);
 			
 			//printf("upper %u lower %u\n", upper, lower);
-			printf(" value '%08x'\n", lower);
+			printf(" value '%u'\n", lower);
 
 			switch (i) {
 			//case 0:
@@ -169,7 +169,7 @@ int main(int argc, const char * argv[])
 
 		}
 
-		gSensorLog->LogMsgArgs(DATA, "%x, %x, %x, %x, %x, %x, %x"//"%u, %u, %u, %u, %u, %u, %u"
+		gSensorLog->LogMsgArgs(DATA, "%u, %u, %u, %u, %u, %u, %u"//"%x, %x, %x, %x, %x, %x, %x"
 					, ADC_Values.AIN0
 					, ADC_Values.AIN1
 					, ADC_Values.AIN2
@@ -178,7 +178,7 @@ int main(int argc, const char * argv[])
 					, ADC_Values.AIN5
 					, ADC_Values.AIN6);
 
-		usleep(500000);
+		usleep(500);
 	}
 
 	return 0;

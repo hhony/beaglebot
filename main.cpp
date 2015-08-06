@@ -11,9 +11,9 @@
 #define PRU_NUM1		1
 #define PRU_NUM0		0
 
-#define RAM2_BEGIN		AM33XX_DATARAM0_PHYS_BASE + 0x00012000
-#define GPIO_WORD_LEN	8  // in bytes
-#define ADC_STORE_LEN	(9 * sizeof(unsigned int))
+//#define RAM2_BEGIN		AM33XX_DATARAM0_PHYS_BASE + 0x00012000
+//#define GPIO_WORD_LEN	8  // in bytes
+//#define ADC_STORE_LEN	(9 * sizeof(unsigned int))
 #define ADC_REGISTERS	7
 
 typedef struct sADC_values {
@@ -38,26 +38,30 @@ int main(int argc, const char * argv[])
 
 	gSensorLog->LogMsgArgs(DATA, "AIN0, AIN1, AIN2, AIN3, AIN4, AIN5, AIN6");
 
-	/* ddr adc */
-	int mem_fd;
-	uint8_t *ddr_adc_mem;
-
-	/* open the device */
-	printf("opening dev/mem...\n");
-
-	mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-	if (mem_fd < 0) {
-		gSensorLog->LogMsgArgs(ERROR, "Failed to open /dev/mem %d: %s", errno, strerror(errno));
-	}
-
-	printf("adc mmap location %x...\n", RAM2_BEGIN);
-
-	// adc memory map
-	ddr_adc_mem = (uint8_t*)mmap(0, ADC_STORE_LEN, PROT_READ, MAP_SHARED, mem_fd, RAM2_BEGIN);
-	if (NULL == ddr_adc_mem) {
-		gSensorLog->LogMsgArgs(ERROR, "Failed to map adc device %d: %s", errno, strerror(errno));
-		close(mem_fd);
-	}
+	/* ddr adc ---
+	 * This uses /dev/mem shared RAM and is slower and lower priority
+	 * It is not needed for this test, but I left it anyway as an example of how to gain access
+	 * You would memcpy and memsync + advance a memory pointer with this route...
+	 */
+//	int mem_fd;
+//	uint8_t *ddr_adc_mem;
+//
+//	/* open the device */
+//	printf("opening dev/mem...\n");
+//
+//	mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
+//	if (mem_fd < 0) {
+//		gSensorLog->LogMsgArgs(ERROR, "Failed to open /dev/mem %d: %s", errno, strerror(errno));
+//	}
+//
+//	printf("adc mmap location %x...\n", RAM2_BEGIN);
+//
+//	// adc memory map
+//	ddr_adc_mem = (uint8_t*)mmap(0, ADC_STORE_LEN, PROT_READ, MAP_SHARED, mem_fd, RAM2_BEGIN);
+//	if (NULL == ddr_adc_mem) {
+//		gSensorLog->LogMsgArgs(ERROR, "Failed to map adc device %d: %s", errno, strerror(errno));
+//		close(mem_fd);
+//	}
 
 	printf("starting pru bin...\n");
         
@@ -83,6 +87,7 @@ int main(int argc, const char * argv[])
 	/* Get the interrupt initialized */
 	prussdrv_pruintc_init(&pruss_intc_initdata);
 
+	// initialize memory pointer to local DRAM
 	void* pru_data_mem;
 	prussdrv_map_prumem (PRUSS0_PRU1_DATARAM, &pru_data_mem);
 
@@ -99,11 +104,11 @@ int main(int argc, const char * argv[])
 
 	while(1) {
 
-		printf("ddr_adc_mem check: %u\n", ddr_adc_mem);
-		if (!ddr_adc_mem) {
-			gSensorLog->LogMsgArgs(ERROR, "ddr_adc_mem is NULL.");
-			return -1;
-		}
+//		printf("ddr_adc_mem check: %u\n", ddr_adc_mem);
+//		if (!ddr_adc_mem) {
+//			gSensorLog->LogMsgArgs(ERROR, "ddr_adc_mem is NULL.");
+//			return -1;
+//		}
 
         printf("Waiting for PRU interrupt command.\n");
         prussdrv_pru_wait_event (PRU_EVTOUT_1, 5000);
@@ -112,16 +117,17 @@ int main(int argc, const char * argv[])
 
 		printf("defining variables...\n");
 
-		uint32_t temp, upper, lower;
+		uint32_t lower;//, upper, temp;
 		
 
 		for (int i = 0; i < ADC_REGISTERS; i++) {
+
 			//printf("reading AIN%d and AIN%d\n", 2*i+1, 2*i);
 			printf("reading AIN%d ", i);
-			//temp = pru_data_int[i];
 
+			//temp = pru_data_int[i];
 			//upper = (temp & 0x0FFF0000) >> 16;
-			lower = pru_data_int[i];//(temp & 0x00000FFF);
+			lower = pru_data_int[i]; //(temp & 0x00000FFF);
 			
 			//printf("upper %u lower %u\n", upper, lower);
 			printf(" value '%u'\n", lower);

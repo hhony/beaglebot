@@ -5,7 +5,6 @@
 //*************************/
 
 //* PRU Register and constants */
-//#define PRU0_ARM_INTERRUPT              19
 #define GPIO_DATAIN                     0x138                                   // This is the register for reading data 
 #define GPIO0                           0x44E07000                              // The address of the GPIO0 bank
 #define GPIO1                           0x4804C000                              // The address of the GPIO1 bank
@@ -20,7 +19,7 @@
 #define GPIO_2_IN       r18
 #define GPIO_3_IN       r19
 
-#define GPIO_WORD_LEN	(8 * 8)
+#define GPIO_WORD_LEN	(8)
 
 #define ADC_BASE        0x44e0d000         // base address for ADC_TSC_SS
 #define ADC_SYS         0x10               // offset for SYSCONFIG register
@@ -60,7 +59,7 @@
 #define ADC_FIFO0THRESH 0xE8               // offset for FIFO0THRESHOLD 
 #define ADC_FIFOTHRESH  0x0000003F         // program to (value-1) samples before generating CPU interrupt
 #define ADC_FIFO0DATA   ADC_BASE + 0x0100  // address of FIFO0DATA
-#define ADC_FIFO0COUNT  0xe4               // offset for FIFO0COUNT
+#define ADC_FIFO0COUNT  0xE4               // offset for FIFO0COUNT
 
 #define ADC_REG	        r20
 #define ADC_CNT	        r21
@@ -162,15 +161,8 @@ WAIT_FOR_IDLE:
     // ADC value init
     MOV ADC_READ, ADC_FIFO0DATA
 
-
 COLLECT: 
 
-//WAIT_FOR_ADC:
-//    LBBO ADC_CNT, ADC_REG, ADC_FIFO0COUNT, 4  // load byte burst: copy 4 bytes into ADC_CNT from FIFO0COUNT
-//    QBNE WAIT_FOR_ADC, ADC_CNT, 8             // quick branch to WAIT_FOR_ADC, if ADC_CNT != 8
-   MOV ADC_CNT, 7
-   MOV ADC_MEM, CTPPR0_REGISTER
-   SBBO 0x08, ADC_MEM, 0, 4 // advance 8 bytes
 
 // The ADC FIFO0DATA description from TI datasheet
 // _____________________ADC_VALUES__________________

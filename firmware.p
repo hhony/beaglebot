@@ -87,6 +87,13 @@
 //Memory map in shared RAM:
 //0x0120:       start address    
 
+.macro KICK_ADC
+    MOV  ADC_TEMP, ADC_STEP_VAL
+    SBBO ADC_TEMP, ADC_REG, ADC_STEP_ENABLE, 4  // enable STEP1 through STEP7
+    MOV  ADC_CNT, 0x00000000
+    MOV  ADC_MEM, 0x00000000
+.endm
+
 INIT:
     LBCO r0, C4, 4, 4              // Load the PRU-ICSS SYSCFG register (4 bytes) into R0
     CLR  r0, r0, 4                 // Clear bit 4 in reg 0 (copy of SYSCFG). This enables OCP master ports needed to access all OMAP peripherals
@@ -121,9 +128,6 @@ WAIT_FOR_IDLE:
     SBBO ADC_TEMP, ADC_REG, ADC_CHG_CONFIG, 4   // reset TS CHARGE state
     MOV  ADC_TEMP, 0x00000001
     SBBO ADC_TEMP, ADC_REG, ADC_CHG_DELAY, 4    // value must be 1 cycle
-    
-    MOV  ADC_TEMP, ADC_STEP_VAL
-    SBBO ADC_TEMP, ADC_REG, ADC_STEP_ENABLE, 4  // enable STEP1 through STEP8
     
     MOV  ADC_TEMP, ADC_CHAN1_CFG
     SBBO ADC_TEMP, ADC_REG, ADC_STEPCONFIG1, 4  // load STEPCONFIG1
@@ -171,6 +175,8 @@ COLLECT:
 // |15_14_13_12_11_10__9__8__7__6__5__4__3__2__1__0|
 // |__RESERVED_|_____________ADCDATA_______________|
 //
+
+    KICK_ADC
 
 READ_ADC_VALS:
 //    LBBO ADC_VALU, ADC_READ, 0, 4              // copy 4 bytes into ADC_VALU from ADC_READ+0

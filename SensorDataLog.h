@@ -38,8 +38,8 @@ enum ELogLevel {
 class SensorDataLog {
 private:
 
-	int fd; 				// file descriptor
-	char file_io_path[20];	// file path
+	int fd;                 // file descriptor
+	char file_io_path[20];  // file path
 
 	int writeToFile(const char *data, int size);
 
@@ -74,7 +74,7 @@ public:
 
 #define SENSOR_LOG (1) //set to 1 to add debug thread
 #if SENSOR_LOG
-	extern SensorDataLog *gSensorLog; 					///> runtime thread for debugging sensor data queue io
+	extern SensorDataLog *gSensorLog; 					///> runtime thread for debugging sensor data
 #endif
 
 #endif // __SensorDataLog_H__

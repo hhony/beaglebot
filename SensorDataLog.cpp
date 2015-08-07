@@ -27,7 +27,6 @@
 SensorDataLog *gSensorLog;
 static ELogLevel LogLevel = DATA;
 
-// const and constexpr not well understood by swig, unfortunately
 #define DFLT_FILE_PERMS 	(S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)
 #define MAX_BUFFER_SIZE		(1024)
 
@@ -37,7 +36,7 @@ static char string_buffer[MAX_BUFFER_SIZE];
 SensorDataLog::SensorDataLog() {
 
 	stop = false;
-	snprintf(file_io_path, 14, "%s", "/tmp/test.log");
+	snprintf(file_io_path, 14, "%s", "/tmp/pru_test.log");
 
 	fd = open(file_io_path, O_CREAT | O_WRONLY | O_SYNC, DFLT_FILE_PERMS );
 

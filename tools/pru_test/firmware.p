@@ -12,7 +12,7 @@
 #define GPIO3                           0x481AE000                              // The address of the GPIO3 bank
 #define PRU1_CONTROL_REGISTER_BASE      0x00024000                              // The base address for all the PRU1 control registers
 #define CTPPR0_REGISTER                 PRU1_CONTROL_REGISTER_BASE + 0x28       // The CTPPR0 register for programming C28 and C29 entries
-#define SHARED_RAM_ENDSTOPS_ADDR        0x0120
+#define SHARED_RAM_LIMITSWITCH_ADDR     0x0120
 
 #define GPIO_0_IN       r16
 #define GPIO_1_IN       r17
@@ -99,7 +99,7 @@ INIT:
     CLR  r0, r0, 4                 // Clear bit 4 in reg 0 (copy of SYSCFG). This enables OCP master ports needed to access all OMAP peripherals
     SBCO r0, C4, 4, 4              // Load back the modified SYSCFG register    
     
-//    MOV  r0, SHARED_RAM_ENDSTOPS_ADDR           // Set the C28 address for shared ram, C29 is set to 0
+//    MOV  r0, SHARED_RAM_LIMITSWITCH_ADDR           // Set the C28 address for shared ram, C29 is set to 0
 //    MOV  r1, CTPPR0_REGISTER
 //    SBBO r0, r1, 0, 4
 

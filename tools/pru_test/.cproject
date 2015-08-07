@@ -28,8 +28,6 @@
 									<listOptionValue builtIn="false" value="/usr/arm-linux-gnueabihf/include/c++/4.7.3"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc-cross/arm-linux-gnueabihf/4.7/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/home/hans/catkin_ws/devel/include"/>
-									<listOptionValue builtIn="false" value="/opt/ros/indigo/include"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.preprocessor.def.887536126" name="Defined symbols (-D)" superClass="gnu.cpp.compiler.option.preprocessor.def" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__cplusplus=201103L"/>
@@ -45,8 +43,6 @@
 									<listOptionValue builtIn="false" value="/usr/arm-linux-gnueabihf/include"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc-cross/arm-linux-gnueabihf/4.7/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/home/hans/catkin_ws/devel/include"/>
-									<listOptionValue builtIn="false" value="/opt/ros/indigo/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.609501094" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
@@ -65,8 +61,6 @@
 									<listOptionValue builtIn="false" value="/usr/arm-linux-gnueabihf/include"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc-cross/arm-linux-gnueabihf/4.7/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
-									<listOptionValue builtIn="false" value="/home/hans/catkin_ws/devel/include"/>
-									<listOptionValue builtIn="false" value="/opt/ros/indigo/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.878878527" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
@@ -79,8 +73,6 @@
 								<listOptionValue builtIn="false" value="/usr/arm-linux-gnueabihf/include/c++/4.7.3"/>
 								<listOptionValue builtIn="false" value="/usr/lib/gcc-cross/arm-linux-gnueabihf/4.7/include"/>
 								<listOptionValue builtIn="false" value="/usr/include"/>
-								<listOptionValue builtIn="false" value="/home/hans/catkin_ws/devel/include"/>
-								<listOptionValue builtIn="false" value="/opt/ros/indigo/include"/>
 							</option>
 							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1356242734" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 						</tool>
@@ -115,8 +107,6 @@
 								<option id="gnu.cpp.compiler.exe.release.option.optimization.level.574702772" name="Optimization Level" superClass="gnu.cpp.compiler.exe.release.option.optimization.level" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.release.option.debugging.level.1340567140" name="Debug Level" superClass="gnu.cpp.compiler.exe.release.option.debugging.level" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1710966640" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/hans/catkin_ws/devel/include"/>
-									<listOptionValue builtIn="false" value="/opt/ros/indigo/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
 									<listOptionValue builtIn="false" value="/usr/arm-linux-gnueabihf/include"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc-cross/arm-linux-gnueabihf/4.7/include"/>
@@ -127,8 +117,6 @@
 								<option defaultValue="gnu.c.optimization.level.most" id="gnu.c.compiler.exe.release.option.optimization.level.1555536169" name="Optimization Level" superClass="gnu.c.compiler.exe.release.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.exe.release.option.debugging.level.1056574819" name="Debug Level" superClass="gnu.c.compiler.exe.release.option.debugging.level" value="gnu.c.debugging.level.none" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.261462664" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/hans/catkin_ws/devel/include"/>
-									<listOptionValue builtIn="false" value="/opt/ros/indigo/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
 									<listOptionValue builtIn="false" value="/usr/arm-linux-gnueabihf/include"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc-cross/arm-linux-gnueabihf/4.7/include"/>
@@ -144,8 +132,6 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.assembler.exe.release.163344345" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.release">
 								<option id="gnu.both.asm.option.include.paths.126076064" name="Include paths (-I)" superClass="gnu.both.asm.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/home/hans/catkin_ws/devel/include"/>
-									<listOptionValue builtIn="false" value="/opt/ros/indigo/include"/>
 									<listOptionValue builtIn="false" value="/usr/include"/>
 									<listOptionValue builtIn="false" value="/usr/arm-linux-gnueabihf/include"/>
 									<listOptionValue builtIn="false" value="/usr/lib/gcc-cross/arm-linux-gnueabihf/4.7/include"/>
@@ -157,8 +143,6 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.exe.release.593480372.156514118" name="main.cpp" rcbsApplicability="disable" resourcePath="main.cpp" toolsToInvoke="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.288760110.1774947719">
 						<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.288760110.1774947719" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.288760110">
 							<option id="gnu.cpp.compiler.option.include.paths.79208363" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-								<listOptionValue builtIn="false" value="/home/hans/catkin_ws/devel/include"/>
-								<listOptionValue builtIn="false" value="/opt/ros/indigo/include"/>
 								<listOptionValue builtIn="false" value="/usr/arm-linux-gnueabihf/include/c++/4.7.3"/>
 							</option>
 							<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1363167862" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>

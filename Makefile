@@ -3,9 +3,9 @@ FILENAME=firmware
 
 .PHONY: clean all
 
-all: bugs
+all: firmware
 
-bugs:	compiler
+firmware:	compiler
 	pasm -bdz firmware.p
 
 compiler:
@@ -13,6 +13,4 @@ compiler:
 
 clean: 
 	rm -f $(FILENAME).bin
-
-
 

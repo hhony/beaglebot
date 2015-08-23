@@ -97,7 +97,7 @@ int main(int argc, const char * argv[])
 	printf("returned from pru 1 start...\n");
 
 	if (ret != 0) {
-		gSensorLog->LogMsgArgs(WARNING, "Could not execute endstop firmware on PRU1 [%u]", ret);
+		gSensorLog->LogMsgArgs(WARNING, "Could not execute firmware on PRU1 [%u]", ret);
 	}
 
 	printf("return code %u\n", ret);

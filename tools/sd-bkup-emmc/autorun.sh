@@ -7,11 +7,14 @@ VERSION="4_1_5"
 if [ $ENABLE_COPY -eq 1 ]; then
   # perform a backup
   echo "[INFO] backing up: /mnt/BBB-eMMC-${VERSION}.img.gz"
-  dd if=/dev/mmcblk1 bs=16M | gzip -c > /mnt/BBB-eMMC-${VERION}.img.gz
+  dd if=/dev/mmcblk1 bs=16M | gzip -c > /mnt/BBB-eMMC-${VERSION}.img.gz
+  if [ -f /mnt/BBB-eMMC-${VERSION}.img.gz ]; then
+    mv /mnt/BBB-eMMC-${VERSION}.img.gz `pwd`
+  fi
 else
   # perform a restore
-  echo "[INFO] restoring: /mnt/BBB-eMMC-${VERSION}.img.gz"
-  gunzip -c /mnt/BBB-eMMC-${VERSION}.img.gz | dd of=/dev/mmcblk1 bs=16M
+  echo "[INFO] restoring: BBB-eMMC-${VERSION}.img.gz"
+  gunzip -c `pwd`/BBB-eMMC-${VERSION}.img.gz | dd of=/dev/mmcblk1 bs=16M
   UUID=$(/sbin/blkid -c /dev/null -s UUID -o value /dev/mmcblk1p2)
   mkdir -p /mnt
   mount /dev/mmcblk1p2 /mnt

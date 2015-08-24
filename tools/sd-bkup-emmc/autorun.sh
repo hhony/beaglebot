@@ -1,7 +1,7 @@
 #!/bin/sh
 echo timer > /sys/class/leds/beaglebone\:green\:usr0/trigger 
 
-ENABLE_COPY=0
+ENABLE_COPY=1
 VERSION="4_1_5"
 
 if [ $ENABLE_COPY -eq 1 ]; then

@@ -14,7 +14,7 @@ I also left the slower /dev/mem shared RAM access code in the comments of main..
 
      apt-get install -y cmake
      cd pru_test
-     mkdir build & cd build
+     mkdir build; cd build
      cmake ..
 
 #### Build:

@@ -1,4 +1,7 @@
 #!/bin/sh
+
+echo "WARNING!!! Testing revealed this process is broken for 4.1.y (LTS)..."
+
 echo timer > /sys/class/leds/beaglebone\:green\:usr0/trigger 
 
 ENABLE_COPY=1

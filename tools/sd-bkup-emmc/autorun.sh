@@ -14,12 +14,30 @@ if [ $ENABLE_COPY -eq 1 ]; then
 else
   # perform a restore
   echo "[INFO] restoring: BBB-eMMC-${VERSION}.img.gz"
-  gunzip -c `pwd`/BBB-eMMC-${VERSION}.img.gz | dd of=/dev/mmcblk1 bs=16M
-  UUID=$(/sbin/blkid -c /dev/null -s UUID -o value /dev/mmcblk1p2)
-  mkdir -p /mnt
-  mount /dev/mmcblk1p2 /mnt
-  sed -i "s/^uuid=.*\$/uuid=$UUID/" /mnt/boot/uEnv.txt
-  umount /mnt
+  gunzip -c `pwd`/BBB-eMMC-${VERSION}.img.gz | dd of=/dev/mmcblk0 bs=16M
+  
+  if [ ! -d /tmp ]; then
+    mkdir -p /tmp
+  else
+    rm -rf /tmp/*
+  fi
+  mount /dev/mmcblk0p2 /tmp
+  
+  unset root_uuid
+  root_uuid=$(/sbin/blkid -c /dev/null -s UUID -o value mmcblk0p2)
+  if [ "${root_uuid}" ] ; then
+    root_uuid="UUID=${root_uuid}"
+    device_id=$(cat /tmp/boot/uEnv.txt | grep mmcroot | grep mmcblk | awk '{print $1}' | awk -F '=' '{print $2}')
+    if [ ! "${device_id}" ] ; then
+      device_id=$(cat /tmp/boot/uEnv.txt | grep mmcroot | grep UUID | awk '{print $1}' | awk -F '=' '{print $3}')
+      device_id="UUID=${device_id}"
+    fi
+    sed -i -e 's:'${device_id}':'${root_uuid}':g' /tmp/boot/uEnv.txt
+  else
+    root_uuid="mmcblk0p2"
+  fi
+  
+  umount /tmp
 fi
 
 sync

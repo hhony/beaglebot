@@ -6,11 +6,8 @@ VERSION="4_1_5"
 
 if [ $ENABLE_COPY -eq 1 ]; then
   # perform a backup
-  echo "[INFO] backing up: /mnt/BBB-eMMC-${VERSION}.img.gz"
-  dd if=/dev/mmcblk1 bs=16M | gzip -c > /mnt/BBB-eMMC-${VERSION}.img.gz
-  if [ -f /mnt/BBB-eMMC-${VERSION}.img.gz ]; then
-    mv /mnt/BBB-eMMC-${VERSION}.img.gz `pwd`
-  fi
+  echo "[INFO] backing up: BBB-eMMC-${VERSION}.img.gz"
+  dd if=/dev/mmcblk0 bs=16M | gzip -c > `pwd`/BBB-eMMC-${VERSION}.img.gz
 else
   # perform a restore
   echo "[INFO] restoring: BBB-eMMC-${VERSION}.img.gz"

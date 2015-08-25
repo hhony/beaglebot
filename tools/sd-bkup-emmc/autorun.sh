@@ -11,6 +11,11 @@ if [ $ENABLE_COPY -eq 1 ]; then
 else
   # perform a restore
   echo "[INFO] restoring: BBB-eMMC-${VERSION}.img.gz"
+  if [ ! -f `pwd`/BBB-eMMC-${VERSION}.img.gz ]; then
+    echo "[ERROR] no restore file found"
+    return
+  fi
+
   gunzip -c `pwd`/BBB-eMMC-${VERSION}.img.gz | dd of=/dev/mmcblk0 bs=16M
   
   if [ ! -d /tmp ]; then
